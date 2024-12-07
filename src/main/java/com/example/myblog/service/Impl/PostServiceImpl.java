@@ -16,4 +16,9 @@ public class PostServiceImpl implements PostService {
     public List<Post> getPosts() {
         return postMapper.getPosts();
     }
+
+    @Override
+    public Post getPostById(int postId) {
+        return postMapper.getPostById(postId);
+    }
 }

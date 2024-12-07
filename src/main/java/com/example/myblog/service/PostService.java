@@ -8,4 +8,5 @@ public interface PostService {
 
     public List<Post> getPosts();
 
+    public Post getPostById(int postId);
 }

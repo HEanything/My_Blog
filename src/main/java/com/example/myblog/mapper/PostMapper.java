@@ -12,4 +12,6 @@ public interface PostMapper {
     @Select("select * from posts")
     List<Post> getPosts();
 
+    @Select("select * from posts where post_id = #{postId}")
+    Post getPostById(int postId);
 }
