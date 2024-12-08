@@ -1,6 +1,7 @@
 package com.example.myblog.service.Impl;
 
 
+import com.example.myblog.DTO.ArticleAndLabel;
 import com.example.myblog.pojo.Post;
 import com.example.myblog.pojo2.BlogArticle;
 import com.example.myblog.service.ArticleService;
@@ -45,6 +46,17 @@ public class ArticleServiceImpl implements ArticleService {
     public List<BlogArticle> getArticlesByUserId(String userId) {
         return ArticleMapper.getArticlesByUserId(userId);
     }
+
+    @Override
+    public List<ArticleAndLabel> getArticleAndLabel() {
+        return ArticleMapper.getArticleAndLabel();
+    }
+
+    @Override
+    public ArticleAndLabel getArticleAndLabelById(int articleId) {
+        return ArticleMapper.getArticleAndLabelById(articleId);
+    }
+
 
 //    @Override
 //    public BlogArticle getArticleById(int postId) {

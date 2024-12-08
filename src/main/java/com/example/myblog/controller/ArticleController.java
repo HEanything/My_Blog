@@ -1,9 +1,12 @@
 package com.example.myblog.controller;
 
+import com.example.myblog.DTO.ArticleAndLabel;
 import com.example.myblog.pojo.Post;
 import com.example.myblog.pojo.Result;
 import com.example.myblog.pojo2.BlogArticle;
+import com.example.myblog.service.ArticleLabelService;
 import com.example.myblog.service.ArticleService;
+import com.example.myblog.service.LabelService;
 import com.example.myblog.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,10 +25,21 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
+    @Autowired
+    private ArticleLabelService ArticlelabelService;
+
     //获取所有博文
+
     @GetMapping("/api/Articles")
     public Result getArtciles() {
         List<BlogArticle> articles= articleService.getArticles();
+        return Result.success(articles);
+    }
+
+    ////使用了DTO层来传输数据，将标签加上了，并根据是否置顶排序,时间顺序
+    @GetMapping("/api/ArticlesAndLabel")
+    public Result getArticlesAndLabel() {
+        List<ArticleAndLabel> articles= articleService.getArticleAndLabel();
         return Result.success(articles);
     }
 
@@ -39,6 +53,18 @@ public class ArticleController {
             return Result.error("博文不存在"); // 博文不存在时返回错误信息
         }
     }
+
+    ////使用了DTO层来传输数据，将标签加上了
+    @GetMapping("/api/ArticlesAndLabel/{articleId}")
+    public Result getArticleAndLabelById(@PathVariable int articleId) {
+        ArticleAndLabel article = articleService.getArticleAndLabelById(articleId);
+        if (article != null) {
+            return Result.success(article); // 成功时返回博文数据
+        } else {
+            return Result.error("博文不存在"); // 博文不存在时返回错误信息
+        }
+    }
+
 
     //写博文
     @PostMapping("/api/writeArticle")
@@ -56,8 +82,19 @@ public class ArticleController {
         if (article == null) {
             return Result.error("博文不存在");
         }
-        articleService.deleteArticle(articleId);
-        return Result.success();
+        try {
+            if (ArticlelabelService.getLabelByArticleId(articleId)!=null){
+                ArticlelabelService.deleteLabels(articleId);
+            }
+            //注意数据库的外键约束关系，先删标签，再删博文
+            articleService.deleteArticle(articleId);
+
+            return Result.success();
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("删除博文失败");
+        }
+
     }
 
     //更新博文
@@ -93,6 +130,13 @@ public class ArticleController {
         }
         return Result.success(articles);
     }
+
+
+
+
+
+
+
 //    @Autowired
 //    private PostService postService;
 //
