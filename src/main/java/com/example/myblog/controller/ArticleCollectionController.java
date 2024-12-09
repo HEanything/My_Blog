@@ -23,7 +23,7 @@ public class ArticleCollectionController {
     private ArticleService articleService;
 
     //将文章收藏到收藏夹里去
-    //需要置顶收藏夹id和文章id
+    //需要收藏夹id和文章id
     @PostMapping("/api/collection/addArticleToCollection")
     public Result addArticleToCollection(Long collectionId,Long articleId){
 
@@ -40,7 +40,7 @@ public class ArticleCollectionController {
         }
     }
     //取消某篇文章的收藏
-    //需要置顶收藏夹id和文章id
+    //需要收藏夹id和文章id
     @PostMapping("/api/collection/deleteArticleFromCollection")
     public Result deleteArticleFromCollection(Long collectionId,Long articleId){
         BlogSetArticleCollection blogSetArticleCollection=articleCollecionService.getArticleCollection(collectionId,articleId);
@@ -65,13 +65,14 @@ public class ArticleCollectionController {
             if (blogCollection==null){
                 return Result.error("收藏夹不存在");
             }
-            //再判断是否有文章
+            //再判断是否有文章(这个应该由前端判断)
             List<BlogArticle> blogArticle=articleCollecionService.getArticleByCollectionId(collectionId);
-            if (blogArticle==null){
-                return Result.error("该收藏夹没有文章");
-            }else {
-                return Result.success(blogArticle);
-            }
+            return Result.success(blogArticle);
+//            if (blogArticle==null){
+//                return Result.error("该收藏夹没有文章");
+//            }else {
+//                return Result.success(blogArticle);
+//            }
         }catch (Exception e){
             return Result.error("获取失败");
         }

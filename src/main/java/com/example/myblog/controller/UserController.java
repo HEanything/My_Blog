@@ -94,7 +94,7 @@ public class UserController {
         return Result.success();
     }
 
-    //管理员更新用户信息(根据id)
+    //管理员更新用户信息(根据id)密码，性别，邮箱，电话号码
     @PatchMapping("/api/user/updateuserinfo/{userId}")
     public Result updateUserInfo(@RequestBody Map<String,String> params,@PathVariable String userId)
     {
@@ -138,9 +138,6 @@ public class UserController {
         userService.unbanUser(userId);
         return Result.success();
     }
-
-
-
 
 //    @PostMapping("/api/user/register")//需要填写用户名，密码，邮箱
 //    public Result register(String userId, String password,String email)

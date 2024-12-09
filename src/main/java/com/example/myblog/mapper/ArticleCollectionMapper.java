@@ -28,4 +28,8 @@ public interface ArticleCollectionMapper {
     //清空收藏夹文章
     @Delete("delete from blog_set_article_collection where collection_id = #{collectionId}")
     void deleteAllArticleFromCollection(Long collectionId);
+
+    //清空含有某篇文章的收藏夹
+    @Delete("delete from blog_set_article_collection where article_id = #{articleId}")
+    void deleteArticleFromAllCollection(long articleId);
 }
