@@ -2,8 +2,11 @@ package com.example.myblog.service.Impl;
 
 
 import com.example.myblog.DTO.ArticleAndLabel;
+import com.example.myblog.mapper.ArticleCollectionMapper;
+import com.example.myblog.mapper.ArticleLabelMapper;
 import com.example.myblog.pojo.Post;
 import com.example.myblog.pojo2.BlogArticle;
+import com.example.myblog.service.ArticleLabelService;
 import com.example.myblog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,10 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private ArticleMapper ArticleMapper;
+    @Autowired
+    private ArticleLabelMapper articleLabelMapper;
+    @Autowired
+    private ArticleCollectionMapper articleCollectionMapper;
 
     @Override
     public List<BlogArticle> getArticles() {
@@ -34,6 +41,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void deleteArticle(int articleId) {
+        //删除文章的标签关系
+        articleLabelMapper.deleteLabels(articleId);
+        //删除文章的收藏关系
+        articleCollectionMapper.deleteAllArticleFromCollection((long) articleId);
+        //删除文章的评论关系
+
+        //删除文章的点赞关系
+
+        //删除文章
         ArticleMapper.deleteArticle(articleId);
     }
 

@@ -66,13 +66,21 @@ public class ArticleController {
     }
 
 
-    //写博文
+    //写博文(标题和内容)
     @PostMapping("/api/writeArticle")
-    public Result writeArticle(String title, String content) {
+    public Result writeArticle(@RequestBody Map<String,String> params) {
         Map<String, Object> claims = ThreadLocalUtil.get();
         String userId = (String) claims.get("userId");
-        articleService.writeArticle(title, content, userId);
-        return Result.success();
+        String title=params.get("title");
+        String content=params.get("content");
+        try{
+            articleService.writeArticle(title, content, userId);
+            return Result.success();
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("写博文失败");
+        }
+
     }
 
     //删除博文
@@ -83,9 +91,7 @@ public class ArticleController {
             return Result.error("博文不存在");
         }
         try {
-            if (ArticlelabelService.getLabelByArticleId(articleId)!=null){
-                ArticlelabelService.deleteLabels(articleId);
-            }
+
             //注意数据库的外键约束关系，先删标签，再删博文
             articleService.deleteArticle(articleId);
 
@@ -98,7 +104,7 @@ public class ArticleController {
     }
 
     //更新博文
-    //目前要求更新标题和内容
+    //目前要求更新标题和内容使用了RequestBody来传参数
     @PutMapping("/api/updateArticle/{articleId}")
     public Result updateArticle(@RequestBody Map<String,String> params,@PathVariable int articleId) {
         BlogArticle article = articleService.getArticleById(articleId);
@@ -130,6 +136,13 @@ public class ArticleController {
         }
         return Result.success(articles);
     }
+
+    //搜索文章功能（排序）
+
+
+
+
+
 
 
 

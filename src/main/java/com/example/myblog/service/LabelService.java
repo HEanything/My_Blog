@@ -8,4 +8,8 @@ public interface LabelService {
     List<BlogLabel> getAllLabels();
 
     boolean addLabel(String labelName, String labelDesc);
+
+    void deleteLabel(int labelId);
+
+    BlogLabel getLabelById(int labelId);
 }

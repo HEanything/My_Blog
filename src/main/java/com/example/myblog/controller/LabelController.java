@@ -37,4 +37,21 @@ public class LabelController {
             return Result.error("添加失败");
         }
     }
+
+    //删除标签
+    @PostMapping("/api/Labels/deleteLabel")
+    public Result deleteLabel(int labelId){
+        //根据标签id找标签
+        BlogLabel blogLabel=Labelservice.getLabelById(labelId);
+        if (blogLabel==null){
+            return Result.error("标签不存在");
+        }
+        try {
+            Labelservice.deleteLabel(labelId);
+            return Result.success("删除成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("删除失败");
+        }
+    }
 }
