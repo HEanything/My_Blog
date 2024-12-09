@@ -45,10 +45,10 @@ public class ArticleServiceImpl implements ArticleService {
         articleLabelMapper.deleteLabels(articleId);
         //删除文章的收藏关系
         articleCollectionMapper.deleteArticleFromAllCollection(articleId);
+        //删除文章的点赞关系
 
         //删除文章的评论关系
 
-        //删除文章的点赞关系
 
         //删除文章
         ArticleMapper.deleteArticle(articleId);

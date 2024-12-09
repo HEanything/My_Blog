@@ -2,7 +2,7 @@ package com.example.myblog.pojo2;
 
 public class BlogMessage {
 
-    private Long messageId; // 留言ID
+    private int messageId; // 留言ID
     private String userId; // 发表用户ID
     private Long messageLikeCount; // 点赞/踩数量
     private String messageDate; // 留言日期
@@ -11,11 +11,11 @@ public class BlogMessage {
     private Boolean messageIsPinned; // 留言是否置顶
 
     // Getters and Setters
-    public Long getMessageId() {
+    public int getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(Long messageId) {
+    public void setMessageId(int messageId) {
         this.messageId = messageId;
     }
 
