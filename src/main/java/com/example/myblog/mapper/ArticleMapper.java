@@ -45,6 +45,9 @@ public interface ArticleMapper {
     @Select("select * from blog_articles where user_id = #{userId}")
     List<BlogArticle> getArticlesByUserId(String userId);
 
+    //根据用户名查找文章，只返回文章id
+    @Select("select article_id from blog_articles where user_id = #{userId}")
+    List<Integer> getArticleIdByUserId(String userId);
 
 
 //    @Select("select * from posts where post_id = #{postId}")
