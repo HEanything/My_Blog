@@ -2,9 +2,11 @@ package com.example.myblog.service.Impl;
 
 import com.example.myblog.mapper.ArticleMapper;
 import com.example.myblog.mapper.CommentMapper;
+import com.example.myblog.mapper.ReportMapper;
 import com.example.myblog.pojo.Comment;
 import com.example.myblog.pojo2.BlogComment;
 import com.example.myblog.service.CommentService;
+import com.example.myblog.service.ReportService;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ public class CommentServiceImpl implements CommentService {
     private CommentMapper commentMapper;
     @Autowired
     private ArticleMapper articleMapper;
+    @Autowired
+    private ReportMapper reportMapper;
 
     @Override
     public List<BlogComment> getCommentsByArticleId(int articleId) {
@@ -48,11 +52,15 @@ public class CommentServiceImpl implements CommentService {
         // 递归删除所有子评论
         deleteAllReplies(commentId);
 
-        // 删除目标评论
-        commentMapper.deleteCommentById(commentId);
+        //先删举报信息
+        reportMapper.deleteCommentReportByCommentId(commentId);
+
         BlogComment comment = commentMapper.getCommentById(commentId);
         //文章评论数减一
         articleMapper.subCommentCount(comment.getArticleId());
+        // 删除目标评论
+        commentMapper.deleteCommentById(commentId);
+
     }
 
     // 递归删除所有子评论
@@ -65,10 +73,13 @@ public class CommentServiceImpl implements CommentService {
         for (BlogComment reply : replies) {
             // 递归删除当前子评论的所有子评论
             deleteAllReplies(reply.getCommentId());  // 递归删除
+            //先删举报信息
+            reportMapper.deleteCommentReportByCommentId(reply.getCommentId());
+            //文章评论数减一
+            articleMapper.subCommentCount(reply.getArticleId());
             // 删除当前子评论
             commentMapper.deleteCommentById(reply.getCommentId());
-            //文章点赞数减一
-            articleMapper.subCommentCount(reply.getArticleId());
+
         }
     }
 
@@ -76,13 +87,13 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void replyComment(int parentCommentId, String content, int articleId, String userId) {
         commentMapper.replyComment(parentCommentId, content, articleId, userId);
+        articleMapper.addCommentCount(articleId);
     }
 
     // 修改评论
     @Override
     public void updateComment(int commentId, String content) {
         commentMapper.updateComment(commentId, content);
-
     }
 
     // 删除文章下的所有评论
@@ -99,9 +110,12 @@ public class CommentServiceImpl implements CommentService {
 
         // 删除根评论
         for (BlogComment comment : comments) {
-            commentMapper.deleteCommentById(comment.getCommentId());
+            //先删举报信息
+            reportMapper.deleteCommentReportByCommentId(comment.getCommentId());
             //文章评论数减一
             articleMapper.subCommentCount(comment.getArticleId());
+            commentMapper.deleteCommentById(comment.getCommentId());
+
         }
     }
 
@@ -109,14 +123,12 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void pinComment(int commentId) {
         commentMapper.pinComment(commentId);
-
     }
 
     // 取消置顶评论
     @Override
     public void unpinComment(int commentId) {
         commentMapper.unpinComment(commentId);
-
     }
 
 

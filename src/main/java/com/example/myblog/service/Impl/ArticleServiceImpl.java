@@ -26,8 +26,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private ArticleCollectionMapper articleCollectionMapper;
     @Autowired
-    private ArticleMapper articleMapper;
-    @Autowired
     private CommentService commentService;
 
     @Override

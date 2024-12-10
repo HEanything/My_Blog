@@ -1,6 +1,7 @@
 package com.example.myblog.service.Impl;
 
 import com.example.myblog.mapper.MessageMapper;
+import com.example.myblog.mapper.ReportMapper;
 import com.example.myblog.pojo2.BlogMessage;
 import com.example.myblog.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import java.util.List;
 public class MessageServiceImpl implements MessageService {
     @Autowired
     private MessageMapper messageMapper;
+    @Autowired
+    private ReportMapper reportMapper;
 
     // 获取留言
     @Override
@@ -61,7 +64,8 @@ public class MessageServiceImpl implements MessageService {
     public void deleteMessage(int messageId) {
         // 递归删除所有子留言
         deleteAllReplies(messageId);
-
+        // 删除对应的举报信息
+        reportMapper.deleteMessageReportByMessageId(messageId);
         // 删除目标留言
         messageMapper.deleteMessageById(messageId);
     }
@@ -82,6 +86,8 @@ public class MessageServiceImpl implements MessageService {
         for (BlogMessage reply : replies) {
             // 递归删除当前子留言的所有子留言
             deleteAllReplies(reply.getMessageId());
+            //删除对应的举报信息
+            reportMapper.deleteMessageReportByMessageId(reply.getMessageId());
 
             // 删除当前子留言
             messageMapper.deleteMessageById(reply.getMessageId());
