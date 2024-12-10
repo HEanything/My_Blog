@@ -2,7 +2,7 @@ package com.example.myblog.pojo2;
 
 public class BlogComment {
 
-    private Long commentId; // 评论ID
+    private int commentId; // 评论ID
     private String userId; // 发表用户ID
     private Long articleId; // 评论博文ID
     private Long commentLikeCount; // 点赞数
@@ -12,11 +12,11 @@ public class BlogComment {
     private Boolean commentIsPinned; // 评论是否置顶
 
     // Getters and Setters
-    public Long getCommentId() {
+    public int getCommentId() {
         return commentId;
     }
 
-    public void setCommentId(Long commentId) {
+    public void setCommentId(int commentId) {
         this.commentId = commentId;
     }
 

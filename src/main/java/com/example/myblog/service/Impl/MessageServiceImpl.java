@@ -66,7 +66,14 @@ public class MessageServiceImpl implements MessageService {
         messageMapper.deleteMessageById(messageId);
     }
 
+    // 更新留言
+    @Override
+    public void updateMessage(int messageId, String content) {
+        messageMapper.updateMessage(messageId,content);
+    }
+
     // 递归删除所有子留言
+    //之后删除所有点赞关系
     private void deleteAllReplies(int messageId) {
         // 获取所有子留言
         List<BlogMessage> replies = messageMapper.getRepliesByMessageId(messageId);

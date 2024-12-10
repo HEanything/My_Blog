@@ -65,11 +65,16 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String userId) {
         userSubscribeMapper.clearSubscribes(userId);//删除关注关系表
         userSubscribeMapper.clearFans(userId);
+        //清空我的点赞
+        //清空我的收藏
+        //清空我的留言关系
+        //清空我的评论关系
         //清空我的文章
         List<Integer> articleIds = articleMapper.getArticleIdByUserId(userId);
         for (Integer articleId : articleIds) {
             articleService.deleteArticle(articleId);
         }
+
         userMapper.deleteUser(userId);
     }
 

@@ -48,4 +48,8 @@ public interface MessageMapper {
     // 获取留言的所有子留言
     @Select("SELECT * FROM blog_messages WHERE parent_message_id = #{messageId}")
     List<BlogMessage> getRepliesByMessageId(int messageId);
+
+    // 更新留言
+    @Update("UPDATE blog_messages SET message_content = #{content} WHERE message_id = #{messageId}")
+    void updateMessage(int messageId, String content);
 }

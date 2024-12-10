@@ -49,6 +49,17 @@ public interface ArticleMapper {
     @Select("select article_id from blog_articles where user_id = #{userId}")
     List<Integer> getArticleIdByUserId(String userId);
 
+    //评论数加1
+    @Update("update blog_articles set article_comment_count = article_comment_count + 1 where article_id = #{articleId}")
+    void addCommentCount(int articleId);
+
+    //评论数减1
+    @Update("update blog_articles set article_comment_count = article_comment_count - 1 where article_id = #{articleId}")
+    void subCommentCount(long articleId);
+
+    //点赞数加1
+    @Update("update blog_articles set article_like_count = article_like_count + 1 where article_id = #{articleId}")
+    void addLikeCount(int articleId);
 
 //    @Select("select * from posts where post_id = #{postId}")
 //    Post getPostById(int postId);

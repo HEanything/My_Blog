@@ -139,6 +139,22 @@ public class UserController {
         return Result.success();
     }
 
+    //找回密码(目前邮箱相当于密保)想用邮箱发邮件的
+    @PostMapping("/api/user/findpassword")
+    public Result findPassword(String userId,String email)
+    {
+        BlogUser blogUser=userService.findUserById(userId);
+        if (blogUser==null){
+            return Result.error("用户不存在");
+        }else{
+            if(blogUser.getUserEmail().equals(email)){
+                return Result.success(blogUser.getUserPassword());
+            }else{
+                return Result.error("邮箱错误");
+            }
+        }
+    }
+
 //    @PostMapping("/api/user/register")//需要填写用户名，密码，邮箱
 //    public Result register(String userId, String password,String email)
 //    {

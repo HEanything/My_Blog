@@ -66,6 +66,24 @@ public class MessageContronller {
         }
     }
 
+    //修改留言
+    @PostMapping("/api/messages/updateMessage")
+    public Result updateMessage(int messageId,String content) {
+        BlogMessage message = messageService.getMessageById(messageId);
+        if (message==null) {
+            return Result.error("没有该留言");
+        }
+        if (content==null||content.equals("")) {
+            return Result.error("留言内容不能为空");
+        }
+        try {
+            messageService.updateMessage(messageId,content);
+            return Result.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("修改留言失败");
+        }
+    }
     //获取某个人发布的留言
     @GetMapping("/api/messages/getMessagesByUserId")
     public Result getMessagesByUserId(String userId) {
