@@ -15,4 +15,10 @@ public interface CollectionService {
     void updateCollection(Long collectionId, String collectionName, String collectionDesc);
 
     BlogCollection getCollectionById(Long collectionId);
+
+    ///////////////////////////以下用户只能有单个的收藏夹////////////////////////////////
+    BlogCollection getDefaultCollection(String userId);
+
+    //删除用户的收藏夹
+    void deleteDefaultCollection(String userId);
 }

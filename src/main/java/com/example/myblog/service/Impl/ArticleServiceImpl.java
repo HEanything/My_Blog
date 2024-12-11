@@ -27,21 +27,25 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private LikeMapper likeMapper;
 
+    //获取所有文章
     @Override
     public List<BlogArticle> getArticles() {
         return ArticleMapper.getArticles();
     }
 
+    //获取具体的文章
     @Override
     public BlogArticle getArticleById(int articleId) {
         return ArticleMapper.getArticleById(articleId);
     }
 
+    //发表文章
     @Override
     public void writeArticle(String title, String content, String userId) {
         ArticleMapper.writeArticle(title,content,userId);
     }
 
+    //删除文章
     @Override
     public void deleteArticle(int articleId) {
         //删除文章的标签关系
@@ -56,80 +60,27 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleMapper.deleteArticle(articleId);
     }
 
+    //修改文章
     @Override
     public void updateArticle(int articleId, String title, String content) {
         ArticleMapper.updateArticle(articleId,title,content);
     }
 
+    //根据用户id获取文章
     @Override
     public List<BlogArticle> getArticlesByUserId(String userId) {
         return ArticleMapper.getArticlesByUserId(userId);
     }
 
+    //获取文章和标签
     @Override
     public List<ArticleAndLabel> getArticleAndLabel() {
         return ArticleMapper.getArticleAndLabel();
     }
 
+    //根据文章id获取文章和标签
     @Override
     public ArticleAndLabel getArticleAndLabelById(int articleId) {
         return ArticleMapper.getArticleAndLabelById(articleId);
     }
-
-
-//    @Override
-//    public BlogArticle getArticleById(int postId) {
-//        return null;
-//    }
-//
-//    @Override
-//    public void writeArticle(String title, String content, String userId) {
-//
-//    }
-//
-//    @Override
-//    public void deleteArticle(int postId) {
-//
-//    }
-//
-//    @Override
-//    public void updateArticle(BlogArticle article) {
-//
-//    }
-//
-//    @Override
-//    public List<BlogArticle> getArticleByAuthor(String userId) {
-//        return List.of();
-//    }
-
-
-//    @Override
-//    public List<Post> getPosts() {
-//        return postMapper.getPosts();
-//    }
-//
-//    @Override
-//    public Post getPostById(int postId) {
-//        return postMapper.getPostById(postId);
-//    }
-//    @Override
-//    public void writePost(String title, String content, String userId) {
-//        postMapper.writePost(title,content,userId);
-//    }
-//
-//    @Override
-//    public void deletePost(int postId) {
-//        postMapper.deletePost(postId);
-//    }
-//
-//    @Override
-//    public void updatePost(Post post) {
-//        postMapper.updatePost(post);
-//    }
-//
-//    @Override
-//    public List<Post> getPostsByAuthor(String userId) {
-//        return postMapper.getPostByAuthor(userId);
-//
-//    }
 }

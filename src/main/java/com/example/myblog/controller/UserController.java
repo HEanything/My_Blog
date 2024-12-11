@@ -1,6 +1,7 @@
 package com.example.myblog.controller;
 
 
+import com.example.myblog.mapper.CollectionMapper;
 import com.example.myblog.pojo.Result;
 import com.example.myblog.pojo.User;
 import com.example.myblog.pojo2.BlogAdmin;
@@ -23,6 +24,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CollectionMapper collectionMapper;
+
     //注册用户
     @PostMapping("/api/user/register")//填写用户名，密码，邮箱
     public Result register(String userId, String password,String email)
@@ -30,6 +34,8 @@ public class UserController {
         BlogUser blogUser=userService.findUserById(userId);
         if (blogUser==null){
             userService.register(userId,password,email);
+            //默认创建一个收藏夹
+            collectionMapper.createDefaultCollection(userId);
             return Result.success();
         }else{
             return Result.error("用户已存在");

@@ -44,4 +44,23 @@ public class CollectionServiceImpl implements CollectionService {
     public BlogCollection getCollectionById(Long collectionId) {
         return collectionMapper.getCollectionById(collectionId);
     }
+
+    ////////////////////////以下是用户只能有默认收藏夹的操作/////////////////////////////
+    //获得用户的收藏夹
+    @Override
+    public BlogCollection getDefaultCollection(String userId) {
+        return collectionMapper.getDefaultCollection(userId);
+    }
+
+    //删除用户的收藏夹
+    @Override
+    public void deleteDefaultCollection(String userId) {
+        //先获得收藏夹的id
+        Long collectionId = collectionMapper.getDefaultCollection(userId).getCollectionId();
+        //先删对应收藏夹博文关系
+        articleCollectionMapper.deleteAllArticleFromCollection(collectionId);
+        //再删收藏夹
+        collectionMapper.deleteDefaultCollection(userId);
+
+    }
 }

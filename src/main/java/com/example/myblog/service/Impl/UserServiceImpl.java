@@ -31,6 +31,8 @@ public class UserServiceImpl implements UserService {
     private CommentService commentService;
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private CollectionService collectionService;
 
 
     @Override
@@ -73,6 +75,7 @@ public class UserServiceImpl implements UserService {
         //清空我的点赞
         likeService.clearUserLike(userId);
         //清空我的收藏
+        collectionService.deleteDefaultCollection(userId);
         //清空我的留言关系
         messageService.deleteUserMessages(userId);
         //清空我的评论关系

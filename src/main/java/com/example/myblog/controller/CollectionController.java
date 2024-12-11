@@ -19,7 +19,24 @@ public class CollectionController {
     @Autowired
     private CollectionService collectionService;
 
+    //删除用户的收藏夹
+    //需要先删除收藏夹的收藏关系
+    @PostMapping("/api/collection/deleteDefaultCollection")
+    public Result deleteDefaultCollection(){
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        String userId = (String) claims.get("userId");
 
+        try{
+            collectionService.deleteCollection(collectionService.getDefaultCollection(userId).getCollectionId());
+            return Result.success();
+        }catch (Exception e){
+            return Result.error("删除失败");
+        }
+    }
+
+
+
+    ////////////////////////////////////以下是如果一个人可以有多个收藏夹//////////////////////////////
     //创建收藏夹
     @PostMapping("/api/collection/createCollection")
     public Result createCollection(String collectionName,String collectionDesc){
