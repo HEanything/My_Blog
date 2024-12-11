@@ -1,5 +1,6 @@
 package com.example.myblog.service.Impl;
 
+import com.example.myblog.DTO.DetailedMessage;
 import com.example.myblog.mapper.LikeMapper;
 import com.example.myblog.mapper.MessageMapper;
 import com.example.myblog.mapper.ReportMapper;
@@ -97,6 +98,12 @@ public class MessageServiceImpl implements MessageService {
             messageMapper.deleteMessageById(message.getMessageId());
         }
 
+    }
+
+    /////////////获取详细的留言
+    @Override
+    public List<DetailedMessage> getDetailedMessages(String userId) {
+        return messageMapper.getDetailedMessages(userId);
     }
 
 

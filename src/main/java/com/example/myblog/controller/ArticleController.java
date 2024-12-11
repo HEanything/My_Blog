@@ -1,6 +1,7 @@
 package com.example.myblog.controller;
 
 import com.example.myblog.DTO.ArticleAndLabel;
+import com.example.myblog.DTO.DetailedArticle;
 import com.example.myblog.pojo.Post;
 import com.example.myblog.pojo.Result;
 import com.example.myblog.pojo2.BlogArticle;
@@ -39,8 +40,13 @@ public class ArticleController {
     ////使用了DTO层来传输数据，将标签加上了，并根据是否置顶排序,时间顺序
     @GetMapping("/api/ArticlesAndLabel")
     public Result getArticlesAndLabel() {
-        List<ArticleAndLabel> articles= articleService.getArticleAndLabel();
-        return Result.success(articles);
+        try {
+            List<ArticleAndLabel> articles= articleService.getArticleAndLabel();
+            return Result.success(articles);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("获取博文失败");
+        }
     }
 
     //根据博文id获取博文
@@ -62,6 +68,25 @@ public class ArticleController {
             return Result.success(article); // 成功时返回博文数据
         } else {
             return Result.error("博文不存在"); // 博文不存在时返回错误信息
+        }
+    }
+
+    /////文章详细页代码调用
+    @GetMapping("/api/DetailedArticle/{articleId}")
+    public Result getDetailedArticle(@PathVariable int articleId) {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        String userId = (String) claims.get("userId");
+        DetailedArticle article = null;
+        try {
+            article = articleService.getDetailedArticle(articleId, userId);
+            if (article == null) {
+                return Result.error("未找到文章");
+            } else {
+                return Result.success(article);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("获取文章失败");
         }
     }
 
@@ -113,31 +138,51 @@ public class ArticleController {
         }
         String title=params.get("title");
         String content=params.get("content");
-        articleService.updateArticle(articleId, title, content);
-        return Result.success();
+        try {
+            articleService.updateArticle(articleId, title, content);
+            return Result.success("更新成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("更新博文失败");
+        }
     }
     //用户自己获取自己的博文列表
     @GetMapping("/api/Articles/myself")
     public Result<List<BlogArticle>> getArticlesByMyself() {
         Map<String, Object> claims = ThreadLocalUtil.get();//通过jwt令牌传输用户id
         String userId = (String) claims.get("userId");
-        List<BlogArticle> articles = articleService.getArticlesByUserId(userId);
-        if (articles == null) {
-            return Result.error("博文不存在");
+        try {
+            List<BlogArticle> articles = articleService.getArticlesByUserId(userId);
+            return Result.success(articles);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("获取博文失败");
         }
-        return Result.success(articles);
     }
     //根据用户id获取博文列表
     @GetMapping("/api/Articles/author/{userId}")
     public Result<List<BlogArticle>> getArticlesByAuthor(@PathVariable String userId) {
-        List<BlogArticle> articles = articleService.getArticlesByUserId(userId);
-        if (articles == null) {
-            return Result.error("博文不存在");
+        try {
+            List<BlogArticle> articles = articleService.getArticlesByUserId(userId);
+            return Result.success(articles);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("获取博文失败");
         }
-        return Result.success(articles);
     }
 
-    //搜索文章功能（排序）
+    //搜索文章功能
+    ///模糊查询，模糊匹配标题和内容和标签
+    @PostMapping("/api/searchArticles")
+    public Result searchArticles(String keyword) {
+        try {
+            List<ArticleAndLabel> articles = articleService.searchArticles(keyword);
+            return Result.success(articles);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("搜索失败");
+        }
+    }
 
 
 

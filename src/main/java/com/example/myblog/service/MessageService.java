@@ -1,5 +1,6 @@
 package com.example.myblog.service;
 
+import com.example.myblog.DTO.DetailedMessage;
 import com.example.myblog.pojo2.BlogMessage;
 
 import java.util.List;
@@ -31,4 +32,7 @@ public interface MessageService {
 
     //删除用户的所有留言
     void deleteUserMessages(String userId);
+
+    //////////获取对应的详细的留言
+    List<DetailedMessage> getDetailedMessages(String userId);
 }

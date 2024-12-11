@@ -1,5 +1,6 @@
 package com.example.myblog.mapper;
 
+import com.example.myblog.DTO.DetailedComment;
 import com.example.myblog.pojo.Comment;
 import com.example.myblog.pojo2.BlogComment;
 import org.apache.ibatis.annotations.*;
@@ -48,6 +49,17 @@ public interface CommentMapper {
     // 根据用户Id获取评论
     @Select("select * from blog_comments where user_id = #{userId}")
     List<BlogComment> getCommentsByUserId(String userId);
+
+    // 获取评论详细信息
+// 获取指定文章的所有评论详细信息
+    @Select("SELECT c.comment_id, c.user_id, c.article_id, c.comment_like_count, c.comment_date, " +
+            "c.comment_content, c.parent_comment_id, c.comment_isPinned, " +
+            "(SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END FROM blog_like_comment l " +
+            "WHERE l.comment_id = c.comment_id AND l.user_id = #{userId} AND l.like_type = 1) AS liked, " +
+            "(SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END FROM blog_like_comment l " +
+            "WHERE l.comment_id = c.comment_id AND l.user_id = #{userId} AND l.like_type = 0) AS disliked " +
+            "FROM blog_comments c WHERE c.article_id = #{articleId}")
+    List<DetailedComment> getDetailedCommentsByArticleId(int articleId, String userId);
 
 //    @Select("select * from comments where post_id = #{postId}")
 //    List<Comment> getCommentsByPostId(int postId);

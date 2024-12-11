@@ -31,14 +31,19 @@ public class UserController {
     @PostMapping("/api/user/register")//填写用户名，密码，邮箱
     public Result register(String userId, String password,String email)
     {
-        BlogUser blogUser=userService.findUserById(userId);
-        if (blogUser==null){
-            userService.register(userId,password,email);
-            //默认创建一个收藏夹
-            collectionMapper.createDefaultCollection(userId);
-            return Result.success();
-        }else{
-            return Result.error("用户已存在");
+        try {
+            BlogUser blogUser=userService.findUserById(userId);
+            if (blogUser==null){
+                userService.register(userId,password,email);
+                //默认创建一个收藏夹
+                collectionMapper.createDefaultCollection(userId);
+                return Result.success();
+            }else{
+                return Result.error("用户已存在");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("注册失败");
         }
     }
 
@@ -46,21 +51,26 @@ public class UserController {
     @PostMapping("/api/user/login")
     public Result login(String userId, String password)
     {
-        BlogUser blogUser=userService.findUserById(userId);
-        if (blogUser==null){
-            return Result.error("用户不存在");
-        }else if(blogUser.getUserIsBanned())
-        {
-            return Result.error("用户已被封禁");
-        } else{
-            if(blogUser.getUserPassword().equals(password)){
-                Map<String, Object>claims=new HashMap<>();
-                claims.put("userId",userId);
-                String token= JwtUtil.genToken(claims);
-                return Result.success(token);
-            }else{
-                return Result.error("密码错误");
+        try {
+            BlogUser blogUser=userService.findUserById(userId);
+            if (blogUser==null){
+                return Result.error("用户不存在");
+            }else if(blogUser.getUserIsBanned())
+            {
+                return Result.error("用户已被封禁");
+            } else{
+                if(blogUser.getUserPassword().equals(password)){
+                    Map<String, Object>claims=new HashMap<>();
+                    claims.put("userId",userId);
+                    String token= JwtUtil.genToken(claims);
+                    return Result.success(token);
+                }else{
+                    return Result.error("密码错误");
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("登录失败");
         }
     }
 
@@ -68,20 +78,25 @@ public class UserController {
     @PostMapping("/api/user/adminlogin")
     public Result adminLogin(String userId, String password)
     {
-        BlogUser blogUser=userService.findUserById(userId);
-        BlogAdmin blogAdmin=userService.findAdminById(userId);
-        if (blogUser==null||blogAdmin==null){
-            return Result.error("用户不存在");
-        }else{
-            if(blogUser.getUserPassword().equals(password)){
-                Map<String, Object>claims=new HashMap<>();
-                claims.put("userId",userId);
-                claims.put("isAdmin",true);
-                String token= JwtUtil.genToken(claims);
-                return Result.success(token);
+        try {
+            BlogUser blogUser=userService.findUserById(userId);
+            BlogAdmin blogAdmin=userService.findAdminById(userId);
+            if (blogUser==null||blogAdmin==null){
+                return Result.error("用户不存在");
             }else{
-                return Result.error("密码错误");
+                if(blogUser.getUserPassword().equals(password)){
+                    Map<String, Object>claims=new HashMap<>();
+                    claims.put("userId",userId);
+                    claims.put("isAdmin",true);
+                    String token= JwtUtil.genToken(claims);
+                    return Result.success(token);
+                }else{
+                    return Result.error("密码错误");
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("登录失败");
         }
     }
 
@@ -104,9 +119,13 @@ public class UserController {
         if(!newPWD.equals(rePWD)){
             return Result.error("两次密码不一致");
         }
-        userService.updatePWD(newPWD,userId);
-        return Result.success();
-
+        try {
+            userService.updatePWD(newPWD,userId);
+            return Result.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("修改失败");
+        }
     }
 
     //用户更新个人信息(目前修改性别，邮箱，电话号)
@@ -118,8 +137,13 @@ public class UserController {
         String phoneNumber=params.get("phoneNumber");
         Map<String, Object> claims= ThreadLocalUtil.get();
         String userId=(String) claims.get("userId");
-        userService.updateMyselfInfo(gender,email,phoneNumber,userId);
-        return Result.success();
+        try {
+            userService.updateMyselfInfo(gender,email,phoneNumber,userId);
+            return Result.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("更新失败");
+        }
     }
 
     //管理员更新用户信息(根据id)密码，性别，邮箱，电话号码
@@ -130,41 +154,66 @@ public class UserController {
         String gender=params.get("gender");
         String email=params.get("email");
         String phoneNumber=params.get("phoneNumber");
-        userService.updateUserInfo(password,gender,email,phoneNumber,userId);
-        return Result.success();
+        try {
+            userService.updateUserInfo(password,gender,email,phoneNumber,userId);
+            return Result.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("更新失败");
+        }
     }
 
     //管理员获得所有用户信息
     @GetMapping("/api/user/getusersinfo")
     public Result getUsersInfo()
     {
-        List<BlogUser> users=userService.getUsersInfo();
-        if (users==null){
-            return Result.error("不存在用户或查询出错");
+        try {
+            List<BlogUser> users=userService.getUsersInfo();
+            if (users==null){
+                return Result.error("不存在用户或查询出错");
+            }
+            return Result.success(users);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("查询出错");
         }
-        return Result.success(users);
     }
     //管理员删除用户
     @DeleteMapping("/api/user/deleteuser/{userId}")
     public Result deleteUser(@PathVariable String userId)
     {
-        userService.deleteUser(userId);
-        return Result.success();
+        try {
+            userService.deleteUser(userId);
+            return Result.success("删除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("删除失败");
+        }
     }
     //管理员封禁用户
     @PatchMapping("/api/user/banuser/{userId}")
     public Result banUser(@PathVariable String userId)
     {
 
-        userService.banUser(userId);
-        return Result.success();
+        try {
+            userService.banUser(userId);
+            return Result.success("封禁成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("封禁失败");
+        }
     }
     //管理员恢复用户
     @PatchMapping("/api/user/recoveruser/{userId}")
     public Result recoverUser(@PathVariable String userId)
     {
-        userService.unbanUser(userId);
-        return Result.success();
+        try {
+            userService.unbanUser(userId);
+            return Result.success("恢复成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("恢复失败");
+        }
     }
 
     //找回密码(目前邮箱相当于密保)想用邮箱发邮件的

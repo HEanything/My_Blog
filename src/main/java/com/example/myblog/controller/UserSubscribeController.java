@@ -19,6 +19,30 @@ public class UserSubscribeController {
     @Autowired
     private UserSubscribeService userSubscribeService;
 
+
+    //////////关注按钮/////////////
+    @PostMapping("/api/user/UserSubscribe")
+    public Result UserSubscribe(String userId) {
+        Map<String, Object> claims= ThreadLocalUtil.get();
+        String myId=(String) claims.get("userId");
+        if (myId.equals(userId))
+        {
+            return Result.error("不能关注自己");
+        }
+        try{
+            BlogUserSubscribe userSubscribe=userSubscribeService.findSubscribe(myId,userId);
+            if(userSubscribe!=null){//已经关注则取消关注
+                userSubscribeService.unsubscribe(myId,userId);
+                return Result.success("取消关注成功");
+            }else{
+                userSubscribeService.subscribe(myId,userId);
+                return Result.success("关注成功");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("关注失败");
+        }
+    }
     // 关注用户
     @PostMapping("/api/user/subscribe/{userId}")
     public Result subscribe(@PathVariable String userId) {
@@ -51,7 +75,7 @@ public class UserSubscribeController {
                 return Result.error("不能取消关注未关注的用户");
             }
             userSubscribeService.unsubscribe(myId,userId);
-            return Result.success();
+            return Result.success("取消关注成功");
         }catch (Exception e){
             return Result.error("取消关注失败");
         }

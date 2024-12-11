@@ -1,5 +1,6 @@
 package com.example.myblog.service.Impl;
 
+import com.example.myblog.DTO.DetailedComment;
 import com.example.myblog.mapper.ArticleMapper;
 import com.example.myblog.mapper.CommentMapper;
 import com.example.myblog.mapper.LikeMapper;
@@ -162,6 +163,12 @@ public class CommentServiceImpl implements CommentService {
 
         }
 
+    }
+
+    //////////////详细的评论信息
+    @Override
+    public List<DetailedComment> getDetailedCommentsByArticleId(int articleId,String userId) {
+        return commentMapper.getDetailedCommentsByArticleId(articleId,userId);
     }
 
 

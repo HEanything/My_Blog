@@ -2,6 +2,7 @@ package com.example.myblog.service.Impl;
 
 
 import com.example.myblog.DTO.ArticleAndLabel;
+import com.example.myblog.DTO.DetailedArticle;
 import com.example.myblog.mapper.*;
 import com.example.myblog.pojo.Post;
 import com.example.myblog.pojo2.BlogArticle;
@@ -82,5 +83,18 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleAndLabel getArticleAndLabelById(int articleId) {
         return ArticleMapper.getArticleAndLabelById(articleId);
+    }
+
+
+    ///////////获取详细的用户文章信息//////////
+    @Override
+    public DetailedArticle getDetailedArticle(int articleId, String userId) {
+        return ArticleMapper.getDetailedArticle(articleId,userId);
+    }
+
+    /////模糊查询文章////////
+    @Override
+    public List<ArticleAndLabel> searchArticles(String keyword) {
+        return ArticleMapper.searchArticles(keyword);
     }
 }

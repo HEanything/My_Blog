@@ -1,5 +1,6 @@
 package com.example.myblog.service;
 
+import com.example.myblog.DTO.DetailedComment;
 import com.example.myblog.pojo.Comment;
 import com.example.myblog.pojo2.BlogComment;
 
@@ -33,4 +34,7 @@ public interface CommentService {
 
     //清空用户的所有评论
     void clearUserComment(String userId);
+
+    /////////////返回详细的评论////////////
+    List<DetailedComment> getDetailedCommentsByArticleId(int articleId,String userId);
 }

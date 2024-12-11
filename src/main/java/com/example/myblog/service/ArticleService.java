@@ -1,6 +1,7 @@
 package com.example.myblog.service;
 
 import com.example.myblog.DTO.ArticleAndLabel;
+import com.example.myblog.DTO.DetailedArticle;
 import com.example.myblog.pojo.Post;
 import com.example.myblog.pojo2.BlogArticle;
 
@@ -25,6 +26,11 @@ public interface ArticleService {
 
     ArticleAndLabel getArticleAndLabelById(int articleId);
 
+    ////////////获取详细的文章详细
+    DetailedArticle getDetailedArticle(int articleId, String userId);
+
+    ///////////////搜索文章
+    List<ArticleAndLabel> searchArticles(String keyword);
 
 
 //    BlogArticle getArticleById(int postId);

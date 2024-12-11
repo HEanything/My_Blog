@@ -59,14 +59,16 @@ public class LikeController {
             BlogLikeMessage likeMessage = likeService.findLikeMessage(userId, messageId);
             if (likeMessage==null){
                 likeService.addMessageLike(userId,messageId);
+                return Result.success("点赞成功");
             }else {
                 if (likeMessage.getLikeType()){
                     likeService.deleteLikeMessage(likeMessage.getLikeId(),messageId);//如果是点赞的状态就取消点赞
+                    return Result.success("取消点赞成功");
                 }else {
                     likeService.ChangeToLikeMessage(likeMessage.getLikeId(),messageId);//如果是点踩的状态就改为点赞
+                    return Result.success("点赞成功");
                 }
             }
-            return Result.success();
         }catch (Exception e){
             e.printStackTrace();
             return Result.error("点赞失败");
@@ -86,14 +88,16 @@ public class LikeController {
             BlogLikeMessage likeMessage = likeService.findLikeMessage(userId, messageId);
             if (likeMessage==null){
                 likeService.addMessageDislike(userId,messageId);
+                return Result.success("点踩成功");
             }else {
                 if (!likeMessage.getLikeType()){
                     likeService.deleteDisLikeMessage(likeMessage.getLikeId(),messageId);//如果是点踩的状态就取消点踩
+                    return Result.success("取消点踩成功");
                 }else {
                     likeService.ChangeToDislikeMessage(likeMessage.getLikeId(),messageId);//如果是点赞的状态就改为点踩
+                    return Result.success("点踩成功");
                 }
             }
-            return Result.success();
         }catch (Exception e){
             e.printStackTrace();
             return Result.error("点踩失败");
@@ -114,14 +118,16 @@ public class LikeController {
             BlogLikeComment likeComment = likeService.findLikeComment(userId, CommentId);
             if (likeComment==null){
                 likeService.addCommentLike(userId,CommentId);
+                return Result.success("点赞成功");
             }else {
                 if (likeComment.getLikeType()){
                     likeService.deleteLikeComment(likeComment.getLikeId(),CommentId);//如果是点赞的状态就取消点赞
+                    return Result.success("取消点赞成功");
                 }else {
                     likeService.ChangeToLikeComment(likeComment.getLikeId(),CommentId);//如果是点踩的状态就改为点赞
+                    return Result.success("点赞成功");
                 }
             }
-            return Result.success();
         }catch (Exception e){
             e.printStackTrace();
             return Result.error("点赞失败");
@@ -141,14 +147,16 @@ public class LikeController {
             BlogLikeComment likeComment = likeService.findLikeComment(userId, CommentId);
             if (likeComment==null){
                 likeService.addCommentDislike(userId,CommentId);
+                return Result.success("点踩成功");
             }else {
                 if (!likeComment.getLikeType()){
                     likeService.deleteDisLikeComment(likeComment.getLikeId(),CommentId);//如果是点踩的状态就取消点踩
+                    return Result.success("取消点踩成功");
                 }else {
                     likeService.ChangeToDislikeComment(likeComment.getLikeId(),CommentId);//如果是点赞的状态就改为点踩
+                    return Result.success("点踩成功");
                }
             }
-            return Result.success();
         }catch (Exception e){
             e.printStackTrace();
             return Result.error("点踩失败");
@@ -168,14 +176,17 @@ public class LikeController {
             BlogLikeArticle likeArticle = likeService.findLikeArticle(userId, articleId);
             if (likeArticle==null){
                likeService.addArticleLike(userId,articleId);
+                return Result.success("点赞成功");
             }else {
                 if (likeArticle.getLikeType()){
                     likeService.deleteLikeArticle(likeArticle.getLikeId(),articleId);//如果是点赞的状态就取消点赞
+                    return Result.success("取消点赞成功");
                 }else {
                     likeService.ChangeToLikeArticle(likeArticle.getLikeId(),articleId);//如果是点踩的状态就改为点赞
+                    return Result.success("点赞成功");
                 }
             }
-            return Result.success();
+
         }catch (Exception e){
             e.printStackTrace();
             return Result.error("点赞失败");
@@ -194,15 +205,16 @@ public class LikeController {
             BlogLikeArticle likeArticle = likeService.findLikeArticle(userId, articleId);
             if (likeArticle==null){
                 likeService.addArticleDislike(userId,articleId);
+                return Result.success("点踩成功");
             }else {
                 if (!likeArticle.getLikeType()){
                     likeService.deleteDisLikeArticle(likeArticle.getLikeId(),articleId);//如果是点踩的状态就取消点踩
+                    return Result.success("取消点踩成功");
                 }else {
                     likeService.ChangeToDislikeArticle(likeArticle.getLikeId(),articleId);//如果是点赞的状态就改为点踩
+                    return Result.success("点踩成功");
                 }
-
             }
-            return Result.success();
         }catch (Exception e){
             e.printStackTrace();
             return Result.error("点踩失败");

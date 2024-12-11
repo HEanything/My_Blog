@@ -1,6 +1,7 @@
 package com.example.myblog.controller;
 
 
+import com.example.myblog.DTO.DetailedComment;
 import com.example.myblog.pojo.Comment;
 import com.example.myblog.pojo.Result;
 import com.example.myblog.pojo2.BlogComment;
@@ -18,6 +19,23 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    // 获取博客的详细评论包括是否点赞
+    @GetMapping("/api/Articles/{ArticleId}/detailedcomments")
+    public Result getDetailedComments(@PathVariable int ArticleId) {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        String userId = (String) claims.get("userId");
+        try {
+            List<DetailedComment> detailedComments = commentService.getDetailedCommentsByArticleId(ArticleId,userId);
+            if (detailedComments.isEmpty()) {
+                return Result.success("评论为空");
+            }else {
+                return Result.success(detailedComments);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("没有找到评论");  // 如果没有评论，返回错误信息
+        }
+    }
     // 获取博文的评论
     @GetMapping("/api/Articles/{ArticleId}/comments")
     public Result<List<BlogComment>> getCommentsByPostId(@PathVariable int ArticleId) {
@@ -39,7 +57,7 @@ public class CommentController {
         String userId = (String) claims.get("userId");
         try{
             commentService.addComment(commentcontent,ArticleId,userId);
-            return Result.success();
+            return Result.success("评论成功");
         }catch (Exception e){
             e.printStackTrace();
             return Result.error("评论失败");
@@ -95,7 +113,7 @@ public class CommentController {
         }
         try{
             commentService.deleteComment(commentId);
-            return Result.success();
+            return Result.success("删除成功");
         }catch (Exception e){
             e.printStackTrace();
             return Result.error("删除评论失败");
@@ -111,7 +129,7 @@ public class CommentController {
         }
         try{
             commentService.pinComment(commentId);
-            return Result.success();
+            return Result.success("置顶成功");
         }catch (Exception e){
             e.printStackTrace();
             return Result.error("置顶评论失败");
@@ -126,7 +144,7 @@ public class CommentController {
         }
         try{
             commentService.unpinComment(commentId);
-            return Result.success();
+            return Result.success("取消置顶成功");
         }catch (Exception e){
             e.printStackTrace();
             return Result.error("取消置顶评论失败");

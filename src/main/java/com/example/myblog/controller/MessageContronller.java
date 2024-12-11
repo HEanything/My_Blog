@@ -1,9 +1,11 @@
 package com.example.myblog.controller;
 
+import com.example.myblog.DTO.DetailedMessage;
 import com.example.myblog.pojo.Result;
 import com.example.myblog.pojo2.BlogMessage;
 import com.example.myblog.service.MessageService;
 import com.example.myblog.utils.ThreadLocalUtil;
+import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,24 @@ public class MessageContronller {
     private MessageService messageService;
 
 
+    /////////获取详细的留言信息包括点赞
+    @GetMapping("/api/messages/getDetailedMessages")
+    public Result getDetailedMessages() {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        String userId = (String) claims.get("userId");
+        List<DetailedMessage> detailedMessages = null;
+        try {
+            detailedMessages = messageService.getDetailedMessages(userId);
+            if (detailedMessages == null && detailedMessages.isEmpty()) {
+                return Result.success("留言为空");
+            } else {
+                return Result.success(detailedMessages);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("获取留言失败");
+        }
+    }
     //获取留言
     @GetMapping("/api/messages")
     public Result getMessages() {

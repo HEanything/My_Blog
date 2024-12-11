@@ -1,5 +1,6 @@
 package com.example.myblog.mapper;
 
+import com.example.myblog.DTO.DetailedMessage;
 import com.example.myblog.pojo2.BlogMessage;
 import org.apache.ibatis.annotations.*;
 
@@ -52,4 +53,15 @@ public interface MessageMapper {
     // 更新留言
     @Update("UPDATE blog_messages SET message_content = #{content} WHERE message_id = #{messageId}")
     void updateMessage(int messageId, String content);
+
+    //获得对于用户而言的详细信息
+    // 获取用户的留言详细信息
+    @Select("SELECT m.message_id, m.user_id, m.message_like_count, m.message_date, m.message_content, " +
+            "m.parent_message_id, m.message_isPinned, " +
+            "(SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END FROM blog_like_message l " +
+            "WHERE l.message_id = m.message_id AND l.user_id = #{userId} AND l.like_type = 1) AS liked, " +
+            "(SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END FROM blog_like_message l " +
+            "WHERE l.message_id = m.message_id AND l.user_id = #{userId} AND l.like_type = 0) AS disliked " +
+            "FROM blog_messages m")
+    List<DetailedMessage> getDetailedMessages(String userId);
 }
