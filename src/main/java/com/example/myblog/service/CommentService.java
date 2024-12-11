@@ -30,4 +30,7 @@ public interface CommentService {
 
     //取消置顶评论
     void unpinComment(int commentId);
+
+    //清空用户的所有评论
+    void clearUserComment(String userId);
 }

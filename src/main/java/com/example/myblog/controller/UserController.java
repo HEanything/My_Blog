@@ -3,6 +3,7 @@ package com.example.myblog.controller;
 
 import com.example.myblog.pojo.Result;
 import com.example.myblog.pojo.User;
+import com.example.myblog.pojo2.BlogAdmin;
 import com.example.myblog.pojo2.BlogUser;
 import com.example.myblog.service.UserService;
 import com.example.myblog.utils.JwtUtil;
@@ -49,6 +50,27 @@ public class UserController {
             if(blogUser.getUserPassword().equals(password)){
                 Map<String, Object>claims=new HashMap<>();
                 claims.put("userId",userId);
+                String token= JwtUtil.genToken(claims);
+                return Result.success(token);
+            }else{
+                return Result.error("密码错误");
+            }
+        }
+    }
+
+    //管理员登录
+    @PostMapping("/api/user/adminlogin")
+    public Result adminLogin(String userId, String password)
+    {
+        BlogUser blogUser=userService.findUserById(userId);
+        BlogAdmin blogAdmin=userService.findAdminById(userId);
+        if (blogUser==null||blogAdmin==null){
+            return Result.error("用户不存在");
+        }else{
+            if(blogUser.getUserPassword().equals(password)){
+                Map<String, Object>claims=new HashMap<>();
+                claims.put("userId",userId);
+                claims.put("isAdmin",true);
                 String token= JwtUtil.genToken(claims);
                 return Result.success(token);
             }else{

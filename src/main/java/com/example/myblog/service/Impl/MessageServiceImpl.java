@@ -1,5 +1,6 @@
 package com.example.myblog.service.Impl;
 
+import com.example.myblog.mapper.LikeMapper;
 import com.example.myblog.mapper.MessageMapper;
 import com.example.myblog.mapper.ReportMapper;
 import com.example.myblog.pojo2.BlogMessage;
@@ -16,6 +17,8 @@ public class MessageServiceImpl implements MessageService {
     private MessageMapper messageMapper;
     @Autowired
     private ReportMapper reportMapper;
+    @Autowired
+    private LikeMapper likeMapper;
 
     // 获取留言
     @Override
@@ -66,6 +69,8 @@ public class MessageServiceImpl implements MessageService {
         deleteAllReplies(messageId);
         // 删除对应的举报信息
         reportMapper.deleteMessageReportByMessageId(messageId);
+        //删除对应的点赞信息
+        likeMapper.deleteAllMessageLike(messageId);
         // 删除目标留言
         messageMapper.deleteMessageById(messageId);
     }
@@ -75,6 +80,25 @@ public class MessageServiceImpl implements MessageService {
     public void updateMessage(int messageId, String content) {
         messageMapper.updateMessage(messageId,content);
     }
+
+    // 删除用户所有留言
+    @Override
+    public void deleteUserMessages(String userId) {
+        //找到用户的所有留言
+        List<BlogMessage> messages = messageMapper.getMessagesByUserId(userId);
+        for (BlogMessage message : messages) {
+            // 递归删除所有子留言
+            deleteAllReplies(message.getMessageId());
+            // 删除对应的举报信息
+            reportMapper.deleteMessageReportByMessageId(message.getMessageId());
+            //删除对应的点赞信息
+            likeMapper.deleteAllMessageLike(message.getMessageId());
+            // 删除目标留言
+            messageMapper.deleteMessageById(message.getMessageId());
+        }
+
+    }
+
 
     // 递归删除所有子留言
     //之后删除所有点赞关系
@@ -88,6 +112,8 @@ public class MessageServiceImpl implements MessageService {
             deleteAllReplies(reply.getMessageId());
             //删除对应的举报信息
             reportMapper.deleteMessageReportByMessageId(reply.getMessageId());
+            //删除对应的点赞信息
+            likeMapper.deleteAllMessageLike(reply.getMessageId());
 
             // 删除当前子留言
             messageMapper.deleteMessageById(reply.getMessageId());

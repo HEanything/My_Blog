@@ -5,11 +5,10 @@ import com.example.myblog.mapper.ArticleMapper;
 import com.example.myblog.mapper.UserMapper;
 
 import com.example.myblog.mapper.UserSubscribeMapper;
+import com.example.myblog.pojo2.BlogAdmin;
 import com.example.myblog.pojo2.BlogArticle;
 import com.example.myblog.pojo2.BlogUser;
-import com.example.myblog.service.ArticleService;
-import com.example.myblog.service.UserService;
-import com.example.myblog.service.UserSubscribeService;
+import com.example.myblog.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +25,12 @@ public class UserServiceImpl implements UserService {
     private ArticleMapper articleMapper;
     @Autowired
     private ArticleService articleService;
+    @Autowired
+    private LikeService likeService;
+    @Autowired
+    private CommentService commentService;
+    @Autowired
+    private MessageService messageService;
 
 
     @Override
@@ -66,9 +71,12 @@ public class UserServiceImpl implements UserService {
         userSubscribeMapper.clearSubscribes(userId);//删除关注关系表
         userSubscribeMapper.clearFans(userId);
         //清空我的点赞
+        likeService.clearUserLike(userId);
         //清空我的收藏
         //清空我的留言关系
+        messageService.deleteUserMessages(userId);
         //清空我的评论关系
+        commentService.clearUserComment(userId);
         //清空我的文章
         List<Integer> articleIds = articleMapper.getArticleIdByUserId(userId);
         for (Integer articleId : articleIds) {
@@ -86,5 +94,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void unbanUser(String userId) {
         userMapper.unbanUser(userId);
+    }
+
+    //查找管理员
+    @Override
+    public BlogAdmin findAdminById(String userId) {
+        return userMapper.findAdminById(userId);
     }
 }

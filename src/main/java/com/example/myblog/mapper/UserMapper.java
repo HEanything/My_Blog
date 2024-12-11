@@ -2,6 +2,7 @@ package com.example.myblog.mapper;
 
 
 import com.example.myblog.pojo.User;
+import com.example.myblog.pojo2.BlogAdmin;
 import com.example.myblog.pojo2.BlogUser;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -40,6 +41,10 @@ public interface UserMapper {
     void banUser(String userId);
     @Update("update blog_users set user_isBanned = 0 where user_id = #{userId}")
     void unbanUser(String userId);
+
+    //找管理员
+    @Select("select * from blog_admins where user_id = #{userId}")
+    BlogAdmin findAdminById(String userId);
 
 
 //    @Select("select * from users where user_id = #{userId}")

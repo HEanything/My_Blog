@@ -45,6 +45,10 @@ public interface CommentMapper {
     @Update("UPDATE blog_comments SET comment_isPinned = 0 WHERE comment_id = #{commentId}")
     void unpinComment(int commentId);
 
+    // 根据用户Id获取评论
+    @Select("select * from blog_comments where user_id = #{userId}")
+    List<BlogComment> getCommentsByUserId(String userId);
+
 //    @Select("select * from comments where post_id = #{postId}")
 //    List<Comment> getCommentsByPostId(int postId);
 }

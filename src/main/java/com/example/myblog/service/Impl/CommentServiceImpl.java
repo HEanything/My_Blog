@@ -2,6 +2,7 @@ package com.example.myblog.service.Impl;
 
 import com.example.myblog.mapper.ArticleMapper;
 import com.example.myblog.mapper.CommentMapper;
+import com.example.myblog.mapper.LikeMapper;
 import com.example.myblog.mapper.ReportMapper;
 import com.example.myblog.pojo.Comment;
 import com.example.myblog.pojo2.BlogComment;
@@ -22,6 +23,8 @@ public class CommentServiceImpl implements CommentService {
     private ArticleMapper articleMapper;
     @Autowired
     private ReportMapper reportMapper;
+    @Autowired
+    private LikeMapper likeMapper;
 
     @Override
     public List<BlogComment> getCommentsByArticleId(int articleId) {
@@ -54,6 +57,8 @@ public class CommentServiceImpl implements CommentService {
 
         //先删举报信息
         reportMapper.deleteCommentReportByCommentId(commentId);
+        //删除点赞信息
+        likeMapper.deleteAllCommentLike(commentId);
 
         BlogComment comment = commentMapper.getCommentById(commentId);
         //文章评论数减一
@@ -75,6 +80,8 @@ public class CommentServiceImpl implements CommentService {
             deleteAllReplies(reply.getCommentId());  // 递归删除
             //先删举报信息
             reportMapper.deleteCommentReportByCommentId(reply.getCommentId());
+            //删除点赞信息
+            likeMapper.deleteAllCommentLike(reply.getCommentId());
             //文章评论数减一
             articleMapper.subCommentCount(reply.getArticleId());
             // 删除当前子评论
@@ -112,6 +119,8 @@ public class CommentServiceImpl implements CommentService {
         for (BlogComment comment : comments) {
             //先删举报信息
             reportMapper.deleteCommentReportByCommentId(comment.getCommentId());
+            //删除点赞信息
+            likeMapper.deleteAllCommentLike(comment.getCommentId());
             //文章评论数减一
             articleMapper.subCommentCount(comment.getArticleId());
             commentMapper.deleteCommentById(comment.getCommentId());
@@ -129,6 +138,30 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void unpinComment(int commentId) {
         commentMapper.unpinComment(commentId);
+    }
+
+    // 删除用户所有评论
+    @Override
+    public void clearUserComment(String userId) {
+        //获取用户的所有评论
+        List<BlogComment> comments = commentMapper.getCommentsByUserId(userId);
+
+        // 递归删除所有子评论
+        for (BlogComment comment : comments) {
+            deleteAllReplies(comment.getCommentId());
+        }
+        // 删除根评论
+        for (BlogComment comment : comments) {
+            //先删举报信息
+            reportMapper.deleteCommentReportByCommentId(comment.getCommentId());
+            //删除点赞信息
+            likeMapper.deleteAllCommentLike(comment.getCommentId());
+            //文章评论数减一
+            articleMapper.subCommentCount(comment.getArticleId());
+            commentMapper.deleteCommentById(comment.getCommentId());
+
+        }
+
     }
 
 

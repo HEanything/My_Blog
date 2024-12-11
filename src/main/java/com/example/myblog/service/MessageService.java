@@ -28,4 +28,7 @@ public interface MessageService {
 
     //更新留言
     void updateMessage(int messageId, String content);
+
+    //删除用户的所有留言
+    void deleteUserMessages(String userId);
 }
