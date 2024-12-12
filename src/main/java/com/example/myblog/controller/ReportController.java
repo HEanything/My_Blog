@@ -6,12 +6,10 @@ import com.example.myblog.pojo2.BlogMessage;
 import com.example.myblog.pojo2.BlogMessageReport;
 import com.example.myblog.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -22,7 +20,9 @@ public class ReportController {
 
     //举报评论
     @PostMapping("/api/report/reportcomment")
-    public Result reportComment(int commentId,String commentDesciption){
+    public Result reportComment(@RequestBody Map<String, Object> params){
+        int commentId = (int) params.get("commentId");
+        String commentDesciption = (String) params.get("commentDesciption");
         try {
             reportService.reportComment(commentId,commentDesciption);
             return Result.success();
@@ -33,7 +33,9 @@ public class ReportController {
 
     //举报留言
     @PostMapping("/api/report/reportmessage")
-    public Result reportMessage(int messageId,String messageDesciption){
+    public Result reportMessage(@RequestBody Map<String, Object> params){
+        int messageId = (int) params.get("messageId");
+        String messageDesciption = (String) params.get("messageDesciption");
         try {
             reportService.reportMessage(messageId,messageDesciption);
             return Result.success();
@@ -64,7 +66,8 @@ public class ReportController {
     }
     //根据举报id获得评论举报信息
     @GetMapping("/api/report/getcommentreportbyid")
-    public Result getCommentReportById(int commentReportId){
+    public Result getCommentReportById(@RequestBody Map<String, Integer> params){
+        int commentReportId = params.get("commentReportId");
         try {
             BlogCommentReport blogCommentReport = reportService.getCommentReportById(commentReportId);
             return Result.success(blogCommentReport);
@@ -74,7 +77,8 @@ public class ReportController {
     }
     //根据举报id获得留言举报信息
     @GetMapping("/api/report/getmessagereportbyid")
-    public Result getMessageReportById(int messageReportId){
+    public Result getMessageReportById(@RequestBody Map<String, Integer> params){
+        int messageReportId = params.get("messageReportId");
         try {
             BlogMessageReport blogMessageReport = reportService.getMessageReportById(messageReportId);
             return Result.success(blogMessageReport);
@@ -84,7 +88,8 @@ public class ReportController {
     }
     //根据举报id删除评论举报
     @PostMapping("/api/report/deletecommentreport")
-    public Result deleteCommentReport(int commentReportId){
+    public Result deleteCommentReport(@RequestBody Map<String, Integer> params){
+        int commentReportId = params.get("commentReportId");
         try {
             reportService.deleteCommentReport(commentReportId);
             return Result.success();
@@ -94,7 +99,8 @@ public class ReportController {
     }
     //根据举报id删除留言举报
     @PostMapping("/api/report/deletemessagereport")
-    public Result deleteMessageReport(int messageReportId){
+    public Result deleteMessageReport(@RequestBody Map<String, Integer> params){
+        int messageReportId = params.get("messageReportId");
         try {
             reportService.deleteMessageReport(messageReportId);
             return Result.success();
@@ -104,7 +110,8 @@ public class ReportController {
     }
     //根据留言id获得所有关于其的举报
     @GetMapping("/api/report/getallmessagereportbymessageid")
-    public Result getAllMessageReportByMessageId(int messageId){
+    public Result getAllMessageReportByMessageId(@RequestBody Map<String, Integer> params){
+        int messageId = params.get("messageId");
         try {
             List<BlogMessageReport> blogMessageReports = reportService.getAllMessageReportByMessageId(messageId);
             return Result.success(blogMessageReports);
@@ -114,7 +121,8 @@ public class ReportController {
     }
     //根据评论id获得所有关于其的举报
     @GetMapping("/api/report/getallcommentreportbycommentid")
-    public Result getAllCommentReportByCommentId(int commentId){
+    public Result getAllCommentReportByCommentId(@RequestBody Map<String, Integer> params){
+        int commentId = params.get("commentId");
         try {
             List<BlogCommentReport> blogCommentReports = reportService.getAllCommentReportByCommentId(commentId);
             return Result.success(blogCommentReports);
@@ -125,7 +133,8 @@ public class ReportController {
     //删除评论或留言可能会用，前端未必会用，先写着
     //根据留言id删除所有关于其的举报
     @PostMapping("/api/report/deletemessagereportbymessageid")
-    public Result deleteMessageReportByMessageId(int messageId){
+    public Result deleteMessageReportByMessageId(@RequestBody Map<String, Integer> params){
+        int messageId = params.get("messageId");
         try {
             reportService.deleteMessageReportByMessageId(messageId);
             return Result.success();
@@ -135,7 +144,8 @@ public class ReportController {
     }
     //根据评论id删除所有关于其的举报
     @PostMapping("/api/report/deletecommentreportbycommentid")
-    public Result deleteCommentReportByCommentId(int commentId){
+    public Result deleteCommentReportByCommentId(@RequestBody Map<String, Integer> params){
+        int commentId = params.get("commentId");
         try {
             reportService.deleteCommentReportByCommentId(commentId);
             return Result.success();

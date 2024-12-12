@@ -46,7 +46,8 @@ public class MessageContronller {
 
     //发布留言
     @PostMapping("/api/messages/addMessage")
-    public Result addMessage(String content) {
+    public Result addMessage(@RequestBody Map<String, String> params) {
+        String content = params.get("content");
         Map<String, Object> claims = ThreadLocalUtil.get();
         String userId = (String) claims.get("userId");
         if (content == null || content.equals("")) {
@@ -62,7 +63,8 @@ public class MessageContronller {
     }
     //根据留言id获取留言
     @PostMapping("/api/messages/getMessageById")
-    public Result getMessageById(int messageId) {
+    public Result getMessageById(@RequestBody Map<String, Integer> params) {
+        int messageId = params.get("messageId");
         try {
             BlogMessage message = messageService.getMessageById(messageId);
             return Result.success(message);
@@ -88,7 +90,9 @@ public class MessageContronller {
 
     //修改留言
     @PostMapping("/api/messages/updateMessage")
-    public Result updateMessage(int messageId,String content) {
+    public Result updateMessage(@RequestBody Map<String, Object> params) {
+        int messageId = (int) params.get("messageId");
+        String content = (String) params.get("content");
         BlogMessage message = messageService.getMessageById(messageId);
         if (message==null) {
             return Result.error("没有该留言");
@@ -106,7 +110,8 @@ public class MessageContronller {
     }
     //获取某个人发布的留言
     @GetMapping("/api/messages/getMessagesByUserId")
-    public Result getMessagesByUserId(String userId) {
+    public Result getMessagesByUserId(@RequestBody Map<String, String> params) {
+        String userId = params.get("userId");
         try {
             List<BlogMessage> messages = messageService.getMessagesByUserId(userId);
             return Result.success(messages);
@@ -117,7 +122,8 @@ public class MessageContronller {
     }
     //管理员置顶留言
     @PostMapping("/api/messages/pinMessage")
-    public Result pinMessage(int messageId) {
+    public Result pinMessage(@RequestBody Map<String, Integer> params) {
+        int messageId = params.get("messageId");
         BlogMessage message = messageService.getMessageById(messageId);
         if (message==null) {
             return Result.error("没有该留言");
@@ -132,7 +138,8 @@ public class MessageContronller {
     }
     //管理员取消置顶留言
     @PostMapping("/api/messages/unpinMessage")
-    public Result unpinMessage(int messageId) {
+    public Result unpinMessage(@RequestBody Map<String, Integer> params) {
+        int messageId = params.get("messageId");
         BlogMessage message = messageService.getMessageById(messageId);
         if (message==null) {
             return Result.error("没有该留言");
@@ -147,7 +154,9 @@ public class MessageContronller {
     }
     //回复留言
     @PostMapping("/api/messages/replyMessage")
-    public Result replyMessage(int ParentMessageId,String content) {
+    public Result replyMessage(@RequestBody Map<String, Object> params) {
+        int ParentMessageId = (int) params.get("ParentMessageId");
+        String content = (String) params.get("content");
         BlogMessage message = messageService.getMessageById(ParentMessageId);
         if (message==null) {
             return Result.error("没有该留言");
@@ -168,7 +177,8 @@ public class MessageContronller {
     }
     //删除留言
     @PostMapping("/api/messages/deleteMessage")
-    public Result deleteMessage(int messageId) {
+    public Result deleteMessage(@RequestBody Map<String, Integer> params) {
+        int messageId = params.get("messageId");
         if (messageService.getMessageById(messageId)==null) {
             return Result.error("留言不存在");
         }

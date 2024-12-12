@@ -27,7 +27,8 @@ public class ArticleCollectionController {
     ///////////////////////////////////////以下是用户只有单个收藏夹/////////////////////////////
     //收藏按钮
     @PostMapping("/api/collection/collectionArticle")
-    public Result collectionArticle(Long articleId){
+    public Result collectionArticle(@RequestBody Map<String, Long> params){
+        Long articleId = params.get("articleId");
         Map<String, Object> claims = ThreadLocalUtil.get();
         String userId = (String) claims.get("userId");
         BlogArticle blogArticle = articleService.getArticleById(Math.toIntExact(articleId));
@@ -56,7 +57,8 @@ public class ArticleCollectionController {
 
     //收藏文章
     @PostMapping("/api/collection/addArticleToDefaultCollection")
-    public Result addArticleToDefaultCollection(Long articleId){
+    public Result addArticleToDefaultCollection(@RequestBody Map<String, Long> params){
+        Long articleId = params.get("articleId");
         //根据用户名获取收藏夹id
         Map<String, Object> claims = ThreadLocalUtil.get();
         String userId = (String) claims.get("userId");
@@ -96,7 +98,8 @@ public class ArticleCollectionController {
 
     //取消收藏
     @PostMapping("/api/collection/deleteArticleFromDefaultCollection")
-    public Result deleteArticleFromDefaultCollection(Long articleId){
+    public Result deleteArticleFromDefaultCollection(@RequestBody Map<String, Long> params){
+        Long articleId = params.get("articleId");
         //先判断对应的收藏夹是否存在
         Map<String, Object> claims = ThreadLocalUtil.get();
         String userId = (String) claims.get("userId");
@@ -116,7 +119,9 @@ public class ArticleCollectionController {
     //将文章收藏到收藏夹里去
     //需要收藏夹id和文章id
     @PostMapping("/api/collection/addArticleToCollection")
-    public Result addArticleToCollection(Long collectionId,Long articleId){
+    public Result addArticleToCollection(@RequestBody Map<String, Long> params){
+        Long collectionId=params.get("collectionId");
+        Long articleId=params.get("articleId");
 
         //先判断是否存在收藏夹
         BlogCollection blogCollection=collectionService.getCollectionById(collectionId);

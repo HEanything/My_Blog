@@ -10,6 +10,7 @@ import com.example.myblog.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -48,7 +49,8 @@ public class LikeController {
     ///////留言///////////////
     //点赞按钮，获取点赞信息并改变点赞状态(获取是否点赞，是否点踩)
     @PostMapping("/api/likes/MessageLike")
-    public Result MessageLike(int messageId){
+    public Result MessageLike(@RequestBody Map<String,Object> params){
+        int messageId = (int) params.get("messageId");
         Map<String, Object> claims = ThreadLocalUtil.get();
         String userId = (String) claims.get("userId");
         BlogMessage message = messageService.getMessageById(messageId);
@@ -77,7 +79,8 @@ public class LikeController {
 
     //点踩按钮
     @PostMapping("/api/likes/MessageDislike")
-    public Result MessageDislike(int messageId){
+    public Result MessageDislike(@RequestBody Map<String,Integer> params){
+        int messageId = params.get("messageId");
         Map<String, Object> claims = ThreadLocalUtil.get();
         String userId = (String) claims.get("userId");
         BlogMessage message = messageService.getMessageById(messageId);
@@ -107,7 +110,8 @@ public class LikeController {
     ///////评论///////////
     //点赞按钮，获取点赞信息并改变点赞状态(获取是否点赞，是否点踩)
     @PostMapping("/api/likes/CommentLike")
-    public Result CommentLike(int CommentId){
+    public Result CommentLike(@RequestBody Map<String,Object> params){
+        int CommentId = (int) params.get("CommentId");
         Map<String, Object> claims = ThreadLocalUtil.get();
         String userId = (String) claims.get("userId");
         BlogComment comment = commentService.getCommentById(CommentId);
@@ -136,7 +140,8 @@ public class LikeController {
 
     //点踩按钮
     @PostMapping("/api/likes/CommentDislike")
-    public Result CommentDislike(int CommentId){
+    public Result CommentDislike(@RequestBody Map<String,Integer> params){
+        int CommentId = params.get("CommentId");
         Map<String, Object> claims = ThreadLocalUtil.get();
         String userId = (String) claims.get("userId");
         BlogComment comment = commentService.getCommentById(CommentId);
@@ -165,7 +170,8 @@ public class LikeController {
 
     ////////////文章/////////////
     @PostMapping("/api/likes/ArticleLike")
-    public Result ArticleLike(int articleId){
+    public Result ArticleLike(@RequestBody Map<String,Integer> params){
+        int articleId = params.get("articleId");
         Map<String, Object> claims = ThreadLocalUtil.get();
         String userId = (String) claims.get("userId");
         BlogArticle article = articleService.getArticleById(articleId);
@@ -194,7 +200,8 @@ public class LikeController {
     }
 
     @PostMapping("/api/likes/ArticleDislike")
-    public Result ArticleDislike(int articleId){
+    public Result ArticleDislike(@RequestBody Map<String,Integer> params){
+        int articleId = params.get("articleId");
         Map<String, Object> claims = ThreadLocalUtil.get();
         String userId = (String) claims.get("userId");
         BlogArticle article = articleService.getArticleById(articleId);

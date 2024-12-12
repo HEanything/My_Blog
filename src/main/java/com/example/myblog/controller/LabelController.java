@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -27,7 +28,9 @@ public class LabelController {
 
     //增加标签
     @PostMapping("/api/Labels/addLabel")
-    public Result addLabel(String labelName,String labelDesc){
+    public Result addLabel(@RequestBody Map<String, String> params){
+        String labelName=params.get("labelName");
+        String labelDesc=params.get("labelDesc");
         if (labelName==null||labelName.equals("")||labelDesc==null||labelDesc.equals("")){
             return Result.error("标签名和标签描述不能为空");
         }
@@ -40,7 +43,8 @@ public class LabelController {
 
     //删除标签
     @PostMapping("/api/Labels/deleteLabel")
-    public Result deleteLabel(int labelId){
+    public Result deleteLabel(@RequestBody Map<String, Integer> params){
+        int labelId=params.get("labelId");
         //根据标签id找标签
         BlogLabel blogLabel=Labelservice.getLabelById(labelId);
         if (blogLabel==null){

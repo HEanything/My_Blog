@@ -49,7 +49,9 @@ public class CommentController {
     }
     //发表评论
     @PostMapping("/api/comments/addcomments")
-    public Result addComment(String commentcontent, int ArticleId) {
+    public Result addComment(@RequestBody Map<String, Object> params) {
+        String commentcontent = (String) params.get("commentcontent");
+        int ArticleId = (int) params.get("ArticleId");
         if (commentcontent == null || commentcontent.trim().isEmpty()) {
             return Result.error("评论内容不能为空");
         }
@@ -67,7 +69,10 @@ public class CommentController {
 
     // 回复评论
     @PostMapping("/api/comments/replycomments")
-    public Result replyComment(int ParentCommentId,String content,int ArticleId) {
+    public Result replyComment(@RequestBody Map<String, Object> params) {
+        int ParentCommentId = (int) params.get("ParentCommentId");
+        String content = (String) params.get("content");
+        int ArticleId = (int) params.get("ArticleId");
         BlogComment parentComment = commentService.getCommentById(ParentCommentId);
         if (parentComment==null) {
             return Result.error("没有该评论");
@@ -87,7 +92,9 @@ public class CommentController {
     }
     //修改评论
     @PostMapping("/api/comments/updatecomments")
-    public Result updateComment(int commentId,String content) {
+    public Result updateComment(@RequestBody Map<String, Object> params) {
+        int commentId = (int) params.get("commentId");
+        String content = (String) params.get("content");
         BlogComment comment = commentService.getCommentById(commentId);
         if (comment==null) {
             return Result.error("评论不存在");
@@ -106,7 +113,8 @@ public class CommentController {
 
     //删除评论
     @PostMapping("/api/comments/deletecomments")
-    public Result deleteComment(int commentId) {
+    public Result deleteComment(@RequestBody Map<String, Integer> params) {
+        int commentId = params.get("commentId");
         BlogComment comment = commentService.getCommentById(commentId);
         if (comment==null) {
             return Result.error("评论不存在");
@@ -122,7 +130,8 @@ public class CommentController {
 
     //置顶评论
     @PostMapping("/api/comments/pincomments")
-    public Result pinComment(int commentId) {
+    public Result pinComment(@RequestBody Map<String, Integer> params) {
+        int commentId = params.get("commentId");
         BlogComment comment = commentService.getCommentById(commentId);
         if (comment==null) {
             return Result.error("评论不存在");
@@ -137,7 +146,8 @@ public class CommentController {
     }
     //取消置顶
     @PostMapping("/api/comments/unpincomments")
-    public Result unpinComment(int commentId) {
+    public Result unpinComment(@RequestBody Map<String, Integer> params) {
+        int commentId = params.get("commentId");
         BlogComment comment = commentService.getCommentById(commentId);
         if (comment==null) {
             return Result.error("评论不存在");

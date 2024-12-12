@@ -5,10 +5,7 @@ import com.example.myblog.pojo2.BlogUserSubscribe;
 import com.example.myblog.service.UserSubscribeService;
 import com.example.myblog.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +19,8 @@ public class UserSubscribeController {
 
     //////////关注按钮/////////////
     @PostMapping("/api/user/UserSubscribe")
-    public Result UserSubscribe(String userId) {
+    public Result UserSubscribe(@RequestBody Map<String, String> params) {
+        String userId=params.get("userId");
         Map<String, Object> claims= ThreadLocalUtil.get();
         String myId=(String) claims.get("userId");
         if (myId.equals(userId))

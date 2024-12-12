@@ -174,7 +174,8 @@ public class ArticleController {
     //搜索文章功能
     ///模糊查询，模糊匹配标题和内容和标签
     @PostMapping("/api/searchArticles")
-    public Result searchArticles(String keyword) {
+    public Result searchArticles(@RequestBody Map<String, String> params) {
+        String keyword = params.get("keyword");
         try {
             List<ArticleAndLabel> articles = articleService.searchArticles(keyword);
             return Result.success(articles);

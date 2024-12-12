@@ -5,10 +5,9 @@ import com.example.myblog.pojo2.BlogSetArticleLabel;
 import com.example.myblog.service.ArticleLabelService;
 import com.example.myblog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -19,7 +18,8 @@ public class ArticleLabelController {
     //为文章设置标签（更新）
     //若没有标签就设置标签，有就更新
     @PostMapping("/api/Articles/{articleId}/setLabels")
-    public Result setLabels(@PathVariable int articleId, String labelId) {
+    public Result setLabels(@PathVariable int articleId, @RequestBody Map<String, String> params) {
+        String labelId=params.get("labelId");
         BlogSetArticleLabel blogSetArticleLabel=articleLabelService.getLabelByArticleId(articleId);
         if (blogSetArticleLabel!=null){
             try {

@@ -36,8 +36,11 @@ public class UserController {
 
     //注册用户
     @PostMapping("/api/user/register")//填写用户名，密码，邮箱
-    public Result register(String userId, String password,String email)
+    public Result register(@RequestBody Map<String,String> params)
     {
+        String userId=params.get("userId");
+        String password=params.get("password");
+        String email=params.get("email");
         try {
             BlogUser blogUser=userService.findUserById(userId);
             if (blogUser==null){
@@ -56,8 +59,10 @@ public class UserController {
 
     //登录
     @PostMapping("/api/user/login")
-    public Result login(String userId, String password)
+    public Result login(@RequestBody Map<String,String> params)
     {
+        String userId=params.get("userId");
+        String password=params.get("password");
         try {
             BlogUser blogUser=userService.findUserById(userId);
             if (blogUser==null){
@@ -83,8 +88,10 @@ public class UserController {
 
     //管理员登录
     @PostMapping("/api/user/adminlogin")
-    public Result adminLogin(String userId, String password)
+    public Result adminLogin(@RequestBody Map<String,String> params)
     {
+        String userId=params.get("userId");
+        String password=params.get("password");
         try {
             BlogUser blogUser=userService.findUserById(userId);
             BlogAdmin blogAdmin=userService.findAdminById(userId);
@@ -225,7 +232,9 @@ public class UserController {
 
     //找回密码想用邮箱发邮件获得验证码，
     @PostMapping("/api/user/sendemail")
-    public Result sendEmail(String userId, String email) {
+    public Result sendEmail(@RequestBody Map<String, String> params) {
+        String userId = params.get("userId");
+        String email = params.get("email");
         // 查找用户是否存在
         BlogUser blogUser = userService.findUserById(userId);
         if (blogUser == null) {
@@ -258,7 +267,10 @@ public class UserController {
     //重置密码将密码重置为123456
     //需要验证验证码是否正确
     @PostMapping("/api/user/resetpassword")
-    public Result resetPassword(String userId, String email, String code) {
+    public Result resetPassword(@RequestBody Map<String, String> params) {
+        String userId = params.get("userId");
+        String email = params.get("email");
+        String code = params.get("code");
         // 查找数据库中存储的验证码
         UserEmailCode userEmailCode = emailService.findByUserIdAndEmail(userId, email);
 
