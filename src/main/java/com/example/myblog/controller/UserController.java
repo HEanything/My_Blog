@@ -1,11 +1,13 @@
 package com.example.myblog.controller;
 
 
+import com.example.myblog.DTO.UserEmailCode;
 import com.example.myblog.mapper.CollectionMapper;
 import com.example.myblog.pojo.Result;
 import com.example.myblog.pojo.User;
 import com.example.myblog.pojo2.BlogAdmin;
 import com.example.myblog.pojo2.BlogUser;
+import com.example.myblog.service.EmailService;
 import com.example.myblog.service.UserService;
 import com.example.myblog.utils.JwtUtil;
 import com.example.myblog.utils.ThreadLocalUtil;
@@ -13,9 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -26,6 +30,9 @@ public class UserController {
 
     @Autowired
     private CollectionMapper collectionMapper;
+
+    @Autowired
+    private EmailService emailService;
 
     //注册用户
     @PostMapping("/api/user/register")//填写用户名，密码，邮箱
@@ -216,21 +223,75 @@ public class UserController {
         }
     }
 
-    //找回密码(目前邮箱相当于密保)想用邮箱发邮件的
-    @PostMapping("/api/user/findpassword")
-    public Result findPassword(String userId,String email)
-    {
-        BlogUser blogUser=userService.findUserById(userId);
-        if (blogUser==null){
+    //找回密码想用邮箱发邮件获得验证码，
+    @PostMapping("/api/user/sendemail")
+    public Result sendEmail(String userId, String email) {
+        // 查找用户是否存在
+        BlogUser blogUser = userService.findUserById(userId);
+        if (blogUser == null) {
             return Result.error("用户不存在");
-        }else{
-            if(blogUser.getUserEmail().equals(email)){
-                return Result.success(blogUser.getUserPassword());
-            }else{
-                return Result.error("邮箱错误");
+        } else {
+            // 检查邮箱是否匹配
+            if (blogUser.getUserEmail().equals(email)) {
+                try {
+                    // 生成验证码
+                    String code = generateVerificationCode();
+
+                    // 发送邮件
+                    emailService.sendEmailWithCode(email, code);
+
+                    // 保存验证码到数据库（如果已存在则更新）
+                    emailService.saveOrUpdateVerificationCode(userId, email, code);
+
+                    return Result.success("验证码已发送，请查收邮箱");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return Result.error("发送验证码失败");
+                }
+            } else {
+                return Result.error("邮箱不匹配");
             }
         }
     }
+
+
+    //重置密码将密码重置为123456
+    //需要验证验证码是否正确
+    @PostMapping("/api/user/resetpassword")
+    public Result resetPassword(String userId, String email, String code) {
+        // 查找数据库中存储的验证码
+        UserEmailCode userEmailCode = emailService.findByUserIdAndEmail(userId, email);
+
+        if (userEmailCode == null) {
+            return Result.error("账号或邮箱错误");
+        } else {
+            // 校验验证码是否匹配
+            if (userEmailCode.getCode().equals(code)) {
+                // 检查验证码是否过期
+                if (userEmailCode.getExpireTime().before(new Timestamp(System.currentTimeMillis()))) {
+                    return Result.error("验证码已过期");
+                }
+
+                // 重置密码为默认值（123456）
+                try {
+                    userService.updatePWD("123456", userId);
+                    return Result.success("密码重置成功");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return Result.error("密码重置失败");
+                }
+            } else {
+                return Result.error("验证码错误");
+            }
+        }
+    }
+
+    public String generateVerificationCode() {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000);  // 生成6位随机验证码
+        return String.valueOf(code);
+    }
+
 
 //    @PostMapping("/api/user/register")//需要填写用户名，密码，邮箱
 //    public Result register(String userId, String password,String email)

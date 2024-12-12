@@ -1,5 +1,6 @@
 package com.example.myblog.service;
 
+import com.example.myblog.DTO.UserEmailCode;
 import com.example.myblog.pojo2.BlogAdmin;
 import com.example.myblog.pojo2.BlogUser;
 
@@ -26,6 +27,7 @@ public interface UserService {
 
     //查找管理员
     BlogAdmin findAdminById(String userId);
+
 
 
 //    public User findUserById(String userId);
