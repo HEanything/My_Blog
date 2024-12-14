@@ -23,4 +23,7 @@ public interface LabelMapper {
     //删除标签
     @Delete("delete from blog_labels where label_id = #{labelId}")
     void deleteLabel(int labelId);
+/////根据标签名找标签
+    @Select("select * from blog_labels where label_name = #{labelname}")
+    BlogLabel getLabelByName(String labelname);
 }

@@ -31,6 +31,10 @@ public interface ArticleService {
 
     ///////////////搜索文章
     List<ArticleAndLabel> searchArticles(String keyword);
+///////////根据标签id的搜索文章
+    List<ArticleAndLabel> getArticlesByLabelID(String labelId);
+///////////////根据标签名搜索文章
+    List<ArticleAndLabel> getArticlesByLabelName(String labelname);
 
 
 //    BlogArticle getArticleById(int postId);

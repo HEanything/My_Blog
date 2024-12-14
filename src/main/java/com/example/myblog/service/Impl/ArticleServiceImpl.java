@@ -97,4 +97,15 @@ public class ArticleServiceImpl implements ArticleService {
     public List<ArticleAndLabel> searchArticles(String keyword) {
         return ArticleMapper.searchArticles(keyword);
     }
+
+    //////////////根据标签id获取文章////////////
+    @Override
+    public List<ArticleAndLabel> getArticlesByLabelID(String labelId) {
+        return ArticleMapper.getArticlesByLabelID(labelId);
+    }
+
+    @Override
+    public List<ArticleAndLabel> getArticlesByLabelName(String labelname) {
+        return ArticleMapper.getArticlesByLabelName(labelname);
+    }
 }

@@ -94,6 +94,30 @@ public interface ArticleMapper {
             "OR l.label_name LIKE CONCAT('%', #{keyword}, '%')")
     List<ArticleAndLabel> searchArticles(String keyword);
 
+    //////////////////根据标签id获取文章/////////
+    @Select("""
+    SELECT a.article_id, a.user_id, a.article_title, a.article_content, a.article_views, 
+           a.article_comment_count, a.article_like_count, a.article_date, a.article_isPinned, 
+           l.label_name
+    FROM blog_articles a
+    JOIN blog_set_article_label sal ON a.article_id = sal.article_id
+    JOIN blog_labels l ON sal.label_id = l.label_id
+    WHERE l.label_id = #{labelId}
+""")
+    List<ArticleAndLabel> getArticlesByLabelID(String labelId);
+
+    //////////////根据标签名获取文章/////////
+    @Select("""
+    SELECT a.article_id, a.user_id, a.article_title, a.article_content, a.article_views, 
+           a.article_comment_count, a.article_like_count, a.article_date, a.article_isPinned, 
+           l.label_name
+    FROM blog_articles a
+    JOIN blog_set_article_label sal ON a.article_id = sal.article_id
+    JOIN blog_labels l ON sal.label_id = l.label_id
+    WHERE l.label_name = #{labelname}
+""")
+    List<ArticleAndLabel> getArticlesByLabelName(String labelname);
+
 //    @Select("select * from posts where post_id = #{postId}")
 //    Post getPostById(int postId);
 //

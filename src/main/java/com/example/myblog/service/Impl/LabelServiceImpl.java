@@ -45,4 +45,9 @@ public class LabelServiceImpl implements LabelService {
     public BlogLabel getLabelById(int labelId) {
         return labelMapper.getLabelById(labelId);
     }
+
+    @Override
+    public BlogLabel getLabelByName(String labelname) {
+        return labelMapper.getLabelByName(labelname);
+    }
 }

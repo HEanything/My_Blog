@@ -1,12 +1,16 @@
 package com.example.myblog.controller;
 
 import com.example.myblog.DTO.ArticleAndLabel;
+import com.example.myblog.DTO.ArticleWithComments;
 import com.example.myblog.DTO.DetailedArticle;
+import com.example.myblog.DTO.DetailedComment;
 import com.example.myblog.pojo.Post;
 import com.example.myblog.pojo.Result;
 import com.example.myblog.pojo2.BlogArticle;
+import com.example.myblog.pojo2.BlogLabel;
 import com.example.myblog.service.ArticleLabelService;
 import com.example.myblog.service.ArticleService;
+import com.example.myblog.service.CommentService;
 import com.example.myblog.service.LabelService;
 import com.example.myblog.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,11 @@ public class ArticleController {
 
     @Autowired
     private ArticleLabelService ArticlelabelService;
+
+    @Autowired
+    private CommentService commentService;
+    @Autowired
+    private LabelService labelService;
 
     //获取所有博文
 
@@ -87,6 +96,40 @@ public class ArticleController {
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("获取文章失败");
+        }
+    }
+
+
+    ///////////////////////////////////文章详情加对应的评论///////////
+    @GetMapping("/api/Articles/{articleId}/detailsWithComments")
+    public Result getArticleWithComments(@PathVariable int articleId) {
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        String userId = (String) claims.get("userId");
+
+        try {
+            // 获取文章的详细信息
+            DetailedArticle article = articleService.getDetailedArticle(articleId, userId);
+            if (article == null) {
+                return Result.error("未找到文章");
+            }
+
+            // 获取该文章的所有评论
+            List<DetailedComment> detailedComments = commentService.getDetailedCommentsByArticleId(articleId, userId);
+            if (detailedComments == null || detailedComments.isEmpty()) {
+                return Result.error("没有找到评论");
+            }
+
+            // 将文章和评论封装在DTO中
+            ArticleWithComments articleWithCommentsDTO = new ArticleWithComments();
+            articleWithCommentsDTO.setArticle(article);
+            articleWithCommentsDTO.setComments(detailedComments);
+
+            // 返回结果
+            return Result.success(articleWithCommentsDTO);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("获取文章和评论失败");
         }
     }
 
@@ -184,6 +227,41 @@ public class ArticleController {
             return Result.error("搜索失败");
         }
     }
+
+    ///根据标签id获得文章
+    @GetMapping("/api/Articles/labelID/{labelId}")
+    public Result getArticlesByLabelID(@PathVariable String labelId) {
+        ///先获取看有没有对应的id
+        BlogLabel blogLabel=labelService.getLabelById(Integer.parseInt(labelId));
+        if(blogLabel==null){
+            return Result.error("标签不存在");
+        }
+        try {
+            List<ArticleAndLabel> articles = articleService.getArticlesByLabelID(labelId);
+            return Result.success(articles);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("获取文章失败");
+        }
+    }
+
+    ///根据标签名字获得文章
+    @GetMapping("/api/Articles/labelName/{labelname}")
+    public Result getArticlesByLabelName(@PathVariable String labelname) {
+        ////先获取看有没有对应的标签名字
+        BlogLabel blogLabel=labelService.getLabelByName(labelname);
+        if (blogLabel==null){
+            return Result.error("标签不存在");
+        }
+        try {
+            List<ArticleAndLabel> articles = articleService.getArticlesByLabelName(labelname);
+            return Result.success(articles);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("获取文章失败");
+        }
+    }
+
 
 
 

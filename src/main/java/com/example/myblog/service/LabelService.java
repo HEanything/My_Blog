@@ -12,4 +12,6 @@ public interface LabelService {
     void deleteLabel(int labelId);
 
     BlogLabel getLabelById(int labelId);
+//////////根据标签获取对应的标签
+    BlogLabel getLabelByName(String labelname);
 }
